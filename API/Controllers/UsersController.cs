@@ -25,7 +25,6 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]// api/users/2
     public async Task<ActionResult<AppUser>> GetUsers(int id)
     {
-        Console.WriteLine("Test");
         return await _context.Users.FindAsync(id);
     }
 
