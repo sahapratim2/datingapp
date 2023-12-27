@@ -26,10 +26,8 @@ export class NavComponent {
   //   })
   // }
   login() {
-    this.accountService.login(this.model).subscribe(
-      {
-        next:() => this.#router.navigateByUrl('/members'),
-        error: error => this.#toastr.error(error.error)
+    this.accountService.login(this.model).subscribe({
+        next:_ => this.#router.navigateByUrl('/members')
       })
   }
   logout() {

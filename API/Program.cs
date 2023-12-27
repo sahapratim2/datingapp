@@ -3,6 +3,7 @@ using System.Text;
 using API.Data;
 using API.Extensions;
 using API.Interfaces;
+using API.Middleware;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,11 @@ builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
 
+// if(builder.Environment.IsDevelopment()){
+//     app.UseDeveloperExceptionPage();
+// }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 app.UseCors(builder=> builder.AllowAnyHeader().AllowAnyMethod()
