@@ -1,4 +1,3 @@
-import { User } from './../_models/user';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 
@@ -12,18 +11,18 @@ export class HomeComponent {
   users: any;
   registermode = false;
   ngOnInit() {
-    this.getUsers();
+   
   }
   registerToggle() {
     this.registermode = !this.registermode;
   }
-  getUsers() {
-    this.#http.get('http://localhost:5001/api/users').subscribe({
-      next: response => this.users = response,
-      error: error => console.log(error),
-      complete: () => console.log('Requst has completed')
-    })
-  }
+  // getUsers() {
+  //   this.#http.get('http://localhost:5001/api/users').subscribe({
+  //     next: response => this.users = response,
+  //     error: error => console.log(error),
+  //     complete: () => console.log('Requst has completed')
+  //   })
+  // }
   cancelRegisterMode(event: boolean)
   {
     this.registermode = event;
