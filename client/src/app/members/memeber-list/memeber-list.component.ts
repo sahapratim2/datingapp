@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Member } from 'src/app/_models/member';
 import { MembersService } from 'src/app/_services/members.service';
 
@@ -9,16 +10,16 @@ import { MembersService } from 'src/app/_services/members.service';
 })
 export class MemeberListComponent {
   #memberService = inject(MembersService);
-  members: Member[] = [];
+  members$: Observable<Member[]> | undefined;
 
   ngOnInit() {
-    this.loadMembers()
+    this.members$ = this.#memberService.getMembers();
   }
-  loadMembers() {
-    this.#memberService.getMembers().subscribe({
-      next: members => this.members = members
-    }
-    )
-  }
+  // loadMembers() {
+  //   this.#memberService.getMembers().subscribe({
+  //     next: members => this.members = members
+  //   }
+  //   )
+  // }
 
 }

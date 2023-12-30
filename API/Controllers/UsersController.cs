@@ -1,4 +1,5 @@
-﻿using API.Data;
+﻿using System.Security.Claims;
+using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
@@ -53,13 +54,17 @@ public class UsersController : BaseApiController
         // return _mapper.Map<MemberDto>(user);
 
     }
-/*
-//without Async
-    [HttpGet("{id}")]// api/users/2
-    public ActionResult<AppUser> GetUsers1(int id)
+
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
     {
-        return  _context.Users.Find(id);
+        var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUserByUserNameAsync(userName);
+        if (user == null) return NotFound();
+        _mapper.Map(memberUpdateDto, user);
+        if (await _userRepository.SaveAllAsync()) return NoContent();
+        return BadRequest("Failed to Upsate user");
+
     }
-*/
 
 }
