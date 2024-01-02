@@ -6,13 +6,14 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
+import { TimeagoClock, TimeagoModule } from 'ngx-timeago';
 
 @Component({
   selector: 'app-memeber-detail',
   standalone:true,
   templateUrl: './memeber-detail.component.html',
   styleUrls: ['./memeber-detail.component.css'],
-  imports:[CommonModule,TabsModule,GalleryModule]// because we use as a stanalone module
+  imports:[CommonModule,TabsModule,GalleryModule, TimeagoModule]// because we use as a stanalone module
 })
 export class MemeberDetailComponent {
   #memberSerVice = inject(MembersService);
