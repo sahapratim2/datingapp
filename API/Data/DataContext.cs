@@ -12,9 +12,10 @@ public class DataContext : DbContext
         // Your configuration code here
     }
     //require to convert Date
-  
+
     public DbSet<AppUser> Users { get; set; }
     public DbSet<UserLike> Likes { get; set; }
+    public DbSet<Message> Messages { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -24,7 +25,7 @@ public class DataContext : DbContext
                 .HasConversion<DateOnlyConverter, DateOnlyComparer>();
         });
         builder.Entity<UserLike>()
-               .HasKey(k=>new{k.SourceUserId,k.TargetUserId});
+               .HasKey(k => new { k.SourceUserId, k.TargetUserId });
 
         builder.Entity<UserLike>()
                .HasOne(s => s.SourceUser)
@@ -39,6 +40,15 @@ public class DataContext : DbContext
         .OnDelete(DeleteBehavior.NoAction);
         //.OnDelete(DeleteBehavior.Cascade);// For SQL Lite
 
+        builder.Entity<Message>()
+          .HasOne(u => u.Recipient)
+          .WithMany(m => m.MessagesReceived)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Message>()
+            .HasOne(u => u.Sender)
+            .WithMany(m => m.MessagesSent)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
 }

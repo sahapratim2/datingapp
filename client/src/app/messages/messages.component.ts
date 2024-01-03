@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Pagination } from '../_models/pagination';
+import { Message } from '../_models/message';
+import { MessageService } from '../_services/message.service';
 
 @Component({
   selector: 'app-messages',
@@ -6,5 +9,35 @@ import { Component } from '@angular/core';
   styleUrls: ['./messages.component.css']
 })
 export class MessagesComponent {
-
+  #messageService = inject(MessageService);
+  messages?: Message[];
+  pagination?: Pagination;
+  container = 'Unread';
+  pageNumber = 1;
+  pageSize = 5;
+  loading = false;
+  ngOnInit() {
+    this.loadMessages();
+  }
+  loadMessages() {
+    this.loading = true;
+    this.#messageService.getMessages(this.pageNumber, this.pageSize, this.container).subscribe({
+      next: response => {
+        this.messages = response.result;
+        this.pagination = response.pagination;
+        this.loading = false;
+      }
+    })
+  }
+  deleteMessage(id: number) {
+    this.#messageService.deleteMessage(id).subscribe({
+      next:() => this.messages?.splice(this.messages.findIndex(m=>m.id===id),1)
+    })
+  }
+  pageChanged(event: any) {
+    if (this.pageNumber !== event.page) {
+      this.pageNumber = event.page;
+      this.loadMessages();
+    }
+  }
 }
