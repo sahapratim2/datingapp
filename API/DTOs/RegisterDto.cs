@@ -21,7 +21,7 @@ namespace API.DTOs
         //[Phone]
         //[MaxLength]
         [Required]
-        [StringLength(8,MinimumLength =4)]
+        [StringLength(15,MinimumLength =4)]
         public string Password { get; set; }
     }
 }

@@ -24,13 +24,16 @@ public class UsersController : BaseApiController
         _photoService = photoService;
     }
 
+
+    //[Authorize(Roles = "Admin")] // Just for Testing
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
     {
         var currentUser = await _userRepository.GetUserByUserNameAsync(User.GetUserName());
         userParams.CurrentUserName = currentUser.UserName;
-        if(string.IsNullOrEmpty(userParams.Gender)){
-            userParams.Gender = currentUser.Gender=="male"?"female":"male";
+        if (string.IsNullOrEmpty(userParams.Gender))
+        {
+            userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
         }
 
         var users = await _userRepository.GetMembersAsync(userParams);
@@ -53,6 +56,7 @@ public class UsersController : BaseApiController
             return users;
         }
     */
+    //[Authorize(Roles = "Member")]// Just for Testing
     [HttpGet("{username}")]
     public async Task<ActionResult<MemberDto>> GetUser(string userName)
     {
@@ -97,9 +101,10 @@ public class UsersController : BaseApiController
 
         //if (await _userRepository.SaveAllAsync()) return _mapper.Map<PhotoDto>(photo);
         //get the URL Loaction
-        if (await _userRepository.SaveAllAsync()){
+        if (await _userRepository.SaveAllAsync())
+        {
             return CreatedAtAction(nameof(GetUser), new { userName = user.UserName }, _mapper.Map<PhotoDto>(photo));
-        } 
+        }
 
         return BadRequest("Problem adding photo");
     }
@@ -126,7 +131,8 @@ public class UsersController : BaseApiController
     }
 
     [HttpDelete("delete-photo/{photoId}")]
-    public async Task<ActionResult> DeletePhoto(int photoId){
+    public async Task<ActionResult> DeletePhoto(int photoId)
+    {
 
         var user = await _userRepository.GetUserByUserNameAsync(User.GetUserName());
 
@@ -136,7 +142,8 @@ public class UsersController : BaseApiController
 
         if (photo.IsMain) return BadRequest("You cannot delete your main photo");
 
-        if(photo.PublicId !=null){
+        if (photo.PublicId != null)
+        {
             var result = await _photoService.DeletePhotoAsync(photo.PublicId);
             if (result.Error != null) return BadRequest(result.Error.Message);
         }
