@@ -44,7 +44,10 @@ export class MemeberDetailComponent {
   ngOnInit() {
     //this.loadMember() replace with below route resolver
     this.#route.data.subscribe({
-      next: data => this.member = data['member']
+      next: data => {
+        this.member = data['member'];
+        this.getImages();
+      }
     });
     this.#route.queryParams.subscribe({
       next: params => {
@@ -59,7 +62,7 @@ export class MemeberDetailComponent {
         next: messages => this.messages = messages
       })
     }
-    this.getImages();
+   
   }
 
 
@@ -86,6 +89,7 @@ export class MemeberDetailComponent {
       this.images.push(new ImageItem({ src: photo.url, thumb: photo.url }));
       //  this.images.push(new ImageItem({ src: photo.url, thumb: photo.url }));
     }
+    console.log(this.images);
   }
 
   ngOnDestroy() {
