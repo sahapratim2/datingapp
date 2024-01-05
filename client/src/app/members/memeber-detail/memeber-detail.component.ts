@@ -10,6 +10,10 @@ import { TimeagoClock, TimeagoModule } from 'ngx-timeago';
 import { MemberMessagesComponent } from '../member-messages/member-messages.component';
 import { MessageService } from 'src/app/_services/message.service';
 import { Message } from 'src/app/_models/message';
+import { PresenceService } from 'src/app/_services/presence.service';
+import { AccountService } from 'src/app/_services/account.service';
+import { User } from 'src/app/_models/user';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-memeber-detail',
@@ -19,14 +23,23 @@ import { Message } from 'src/app/_models/message';
   imports: [CommonModule, TabsModule, GalleryModule, TimeagoModule, MemberMessagesComponent]// because we use as a stanalone module
 })
 export class MemeberDetailComponent {
-  @ViewChild('memberTabs',{static:true}) memberTabs?: TabsetComponent;
+  @ViewChild('memberTabs', { static: true }) memberTabs?: TabsetComponent;
   #memberSerVice = inject(MembersService);
+  #accountSerVice = inject(AccountService);
   #route = inject(ActivatedRoute);
   #messageService = inject(MessageService);
-  member: Member={} as Member;
+  presenceService = inject(PresenceService);
+  member: Member = {} as Member;
   images: GalleryItem[] = [];
   activeTab?: TabDirective;
   messages: Message[] = [];
+  user?: User;
+
+  constructor() {
+    this.#accountSerVice.currentUser$.pipe(take(1)).subscribe({
+      next: user => { if (user) this.user = user }
+    })
+  }
 
   ngOnInit() {
     //this.loadMember() replace with below route resolver
@@ -49,7 +62,7 @@ export class MemeberDetailComponent {
     this.getImages();
   }
 
-  
+
   selectTab(heading: string) {
     if (this.memberTabs) {
       this.memberTabs.tabs.find(x => x.heading === heading)!.active = true;
@@ -58,8 +71,12 @@ export class MemeberDetailComponent {
 
   onTabActivated(data: TabDirective) {
     this.activeTab = data;
-    if (this.activeTab.heading === 'Messages') {
-      this.loadMessages()
+    if (this.activeTab.heading === 'Messages' && this.user) {
+      this.#messageService.createHubConnection(this.user, this.member.userName);
+      // this.loadMessages()
+    }
+    else {
+      this.#messageService.stopHubConnection();
     }
   }
 
@@ -69,6 +86,10 @@ export class MemeberDetailComponent {
       this.images.push(new ImageItem({ src: photo.url, thumb: photo.url }));
       //  this.images.push(new ImageItem({ src: photo.url, thumb: photo.url }));
     }
+  }
+
+  ngOnDestroy() {
+    this.#messageService.stopHubConnection();
   }
 
   // loadMember() {

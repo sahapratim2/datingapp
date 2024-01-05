@@ -2,6 +2,7 @@ import { MembersService } from 'src/app/_services/members.service';
 import { Member } from './../../_models/member';
 import { Component, Input, inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { PresenceService } from 'src/app/_services/presence.service';
 
 @Component({
   selector: 'app-member-card',
@@ -10,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class MemberCardComponent {
   #memberService = inject(MembersService);
+  presenceService = inject(PresenceService);
   #toastr = inject(ToastrService);
   @Input()
   member: Member | undefined;
@@ -20,4 +22,5 @@ export class MemberCardComponent {
         this.#toastr.success('You have liked ' + member.knownAs)
     });
   }
+
 }
