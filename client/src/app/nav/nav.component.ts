@@ -30,6 +30,7 @@ export class NavComponent {
       next: _ => {
         
         this.#router.navigateByUrl('/members');
+        this.model = {};//empty login text box;
         }
       })
   }

@@ -3,10 +3,10 @@ import { Component, inject } from '@angular/core';
 
 @Component({
   selector: 'app-roles-model',
-  templateUrl: './roles-model.component.html',
-  styleUrls: ['./roles-model.component.css']
+  templateUrl: './roles-modal.component.html',
+  styleUrls: ['./roles-modal.component.css']
 })
-export class RolesModelComponent {
+export class RolesModalComponent {
   userName = '';
   availableRoles: any[] = [];
   selectedRoles: any[] = [];

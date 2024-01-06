@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewChild, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TimeagoModule } from 'ngx-timeago';
 import { Message } from 'src/app/_models/message';
@@ -10,9 +10,11 @@ import { MessageService } from 'src/app/_services/message.service';
   standalone: true,
   templateUrl: './member-messages.component.html',
   styleUrls: ['./member-messages.component.css'],
-  imports:[CommonModule,TimeagoModule,FormsModule]
+  imports: [CommonModule, TimeagoModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MemberMessagesComponent {
+
   @ViewChild('messageForm') messageForm?: NgForm;
   messageService = inject(MessageService);
   @Input() userName?: string;
