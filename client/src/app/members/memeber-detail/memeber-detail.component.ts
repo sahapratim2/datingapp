@@ -14,6 +14,7 @@ import { PresenceService } from 'src/app/_services/presence.service';
 import { AccountService } from 'src/app/_services/account.service';
 import { User } from 'src/app/_models/user';
 import { take } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-memeber-detail',
@@ -24,11 +25,12 @@ import { take } from 'rxjs';
 })
 export class MemeberDetailComponent {
   @ViewChild('memberTabs', { static: true }) memberTabs?: TabsetComponent;
-  #memberSerVice = inject(MembersService);
+  #memberService = inject(MembersService);
   #accountSerVice = inject(AccountService);
   #route = inject(ActivatedRoute);
   #messageService = inject(MessageService);
   presenceService = inject(PresenceService);
+  #toastr = inject(ToastrService);
   member: Member = {} as Member;
   images: GalleryItem[] = [];
   activeTab?: TabDirective;
@@ -89,9 +91,13 @@ export class MemeberDetailComponent {
       this.images.push(new ImageItem({ src: photo.url, thumb: photo.url }));
       //  this.images.push(new ImageItem({ src: photo.url, thumb: photo.url }));
     }
-    console.log(this.images);
   }
-
+  addLike(member: Member) {
+    this.#memberService.addLike(member.userName).subscribe({
+      next: () =>
+        this.#toastr.success('You have liked ' + member.knownAs)
+    });
+  }
   ngOnDestroy() {
     this.#messageService.stopHubConnection();
   }
@@ -99,7 +105,7 @@ export class MemeberDetailComponent {
   // loadMember() {
   //   let userName = this.#route.snapshot.paramMap.get('username')
   //   if (userName) {
-  //     this.#memberSerVice.getMember(userName).subscribe({
+  //     this.#memberService.getMember(userName).subscribe({
   //       next: member => {
   //         this.member = member
   //         this.getImages();
